@@ -1,0 +1,24 @@
+{
+  "name": "mcp-typescript-test-sdk",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "client:stdio": "tsx client/stdio-client.ts",
+    "client:http": "tsx client/http-client.ts http://localhost:3000/mcp greet Hello",
+    "server:stdio": "tsx server/stdio-server.ts",
+    "server:http": "tsx server/http-server.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "express": "^5.2.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.0",
+    "cors": "^2.8.6",
+    "tsx": "^4.23.0",
+    "typescript": "^6.0.3"
+  }
+}

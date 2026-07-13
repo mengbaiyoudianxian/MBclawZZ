@@ -1,0 +1,11 @@
+# Large APK files
+*.apk
+
+# Decompiled dirs (too large for GitHub)
+cloud-decompiled/
+sese-decompiled/
+unzip_*/
+voice-apks/
+
+# Test files
+test_hybrid*.py
