@@ -76,6 +76,7 @@
 - 管理面板
 - key / provider / group / usage / auth / payment / admin 相关页面
 - dashboard 与健康状态页面
+- 面向 Android、Windows、Linux、Web 等端预留管理 API、数据上传接口、状态查询接口与鉴权接口
 
 ### 4.3 tools
 建议承接：

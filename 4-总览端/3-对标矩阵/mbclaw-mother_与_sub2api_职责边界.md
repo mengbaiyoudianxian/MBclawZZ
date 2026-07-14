@@ -1,10 +1,12 @@
 # mbclaw-mother 与 sub2api 职责边界
 
 ## 1. 核心结论
-- `mbclaw-mother` 负责目标、编排、交互、上下文、业务策略与主线流程。
-- sub2api 负责模型入口治理、provider 路由、key 管理、fallback、cooldown、健康检测与统计。
+- sub2api 是第一层地基，负责模型入口治理、provider 路由、key 管理、fallback、cooldown、健康检测与统计。
+- `mbclaw-mother` 建在 sub2api 之上，作为第二层地基，负责目标、编排、交互、上下文、业务策略与主线流程。
+- 控制面板建在 sub2api 与 Mother 两层地基之上，并提前预留三端与 Web 所需管理 API、数据上传接口与状态接口。
 - 当前整理与迁移主载体优先采用 `sub2api`。
 - Mother 不应再并行维护第二套重复的模型入口实现。
+- 兼容方向固定为 Mother 及其上层兼容 sub2api，而不是 sub2api 兼容 Mother 历史接口。
 
 ## 2. mbclaw-mother 负责什么
 ### 2.1 目标理解
@@ -71,6 +73,7 @@
 - MBclaw 侧只保留主线调用、策略、边界与引用。
 - sub2api 负责承接具体管理与调度实现。
 - TokenPool 只作为历史参考，其功能目标直接迁入 sub2api，不为旧接口单独保留兼容包袱。
+- 兼容方向是 Mother、控制面板、客户端去适配 sub2api 的地基边界，而不是让 sub2api 反向兼容上层历史写法。
 
 ## 6. 验收标准
 - 读完后能明确说出 Mother 和 sub2api 的边界。
