@@ -96,16 +96,16 @@ def agent_run(db: DBSession, session_id: int, user_message: str, llm: LLMClient,
             break
 
         try:
-            import httpx
-            resp = httpx.post(f"{llm.base_url}/chat/completions", headers={
-                "Content-Type": "application/json",
-                **({"Authorization": f"Bearer {llm.api_key}"} if llm.api_key else {})
-            }, json={"model": llm.model, "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"## 上下文\n{ctx}\n\n## 当前输入\n{current}"}
-            ], "temperature": 0.3, "max_tokens": 2000}, timeout=120)
-            resp.raise_for_status()
-            raw = resp.json()["choices"][0]["message"]["content"]
+            raw = llm.chat(
+                [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": f"## 上下文\n{ctx}\n\n## 当前输入\n{current}"},
+                ],
+                model=llm.model,
+                temperature=0.3,
+                max_tokens=2000,
+                timeout=120,
+            )
         except Exception as e:
             final = f"LLM调用失败: {e}"
             break

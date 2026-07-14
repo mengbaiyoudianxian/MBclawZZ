@@ -13,7 +13,8 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.llm import LLMClient, LLMError, get_llm
+from app.llm import LLMClient, LLMError
+from server_app.sub2api_client import Sub2APIClient
 from app.memory import MemoryRepo
 from app.models import Message, Session as SessionModel  # orchestrator-only
 from app.pipeline import close_session
@@ -145,7 +146,7 @@ def add_message(
 def close(
     sid: int,
     db: Session = Depends(get_db),
-    llm: LLMClient = Depends(get_llm),
+    llm: Sub2APIClient = Depends(Sub2APIClient),
 ):
     """Close a session: summarise, persist memory, mark closed."""
     try:

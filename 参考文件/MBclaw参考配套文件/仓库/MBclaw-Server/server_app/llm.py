@@ -7,8 +7,9 @@ parse the result into a validated LLMOutput.
 import json
 import os
 
-import httpx
 from pydantic import BaseModel, Field
+
+from server_app.sub2api_client import Sub2APIClient
 
 
 # ── exceptions ───────────────────────────────────────────────
@@ -47,83 +48,20 @@ experiences 最多 5 条。没有则空数组。
 
 # ── client ───────────────────────────────────────────────────
 
-class LLMClient:
-    """OpenAI-compatible chat-completions client.
+class LLMClient(Sub2APIClient):
+    """Thin compatibility subclass for code that still imports LLMClient."""
 
-    Reads credentials from env vars unless explicitly passed.
-    """
-
-    def __init__(self, base_url: str | None = None, api_key: str | None = None, model: str | None = None):
-        self.base_url = (base_url or os.getenv("MBCLAW_LLM_BASE_URL", "https://api.openai.com/v1")).rstrip("/")
-        self.api_key = api_key if api_key is not None else os.getenv("MBCLAW_LLM_API_KEY", "")
-        self.model = model or os.getenv("MBCLAW_LLM_MODEL", "gpt-4o-mini")
-
-    def summarize_session(self, messages: list[dict]) -> LLMOutput:
-        """Send conversation messages to LLM, return structured output.
-
-        Retries once on transient failure; raises LLMError if both attempts fail.
-        """
+    def summarize_session(self, messages: list[dict]) -> dict:
         if os.getenv("MBCLAW_LLM_MOCK") == "1":
-            return LLMOutput(
-                summary="[MOCK] 对话摘要。",
-                keywords=["mock"],
-                experiences=[],
-            )
+            return {
+                "summary": "[MOCK] 对话摘要。",
+                "keywords": ["mock"],
+                "experiences": [],
+            }
+        return super().summarize_session(messages, model=self.model, timeout=60)
 
-        if not self.api_key:
-            raise LLMError("LLM API key not configured. Set MBCLAW_LLM_API_KEY.")
 
-        text = "\n".join(
-            f"[{m.get('role', 'unknown')}]: {m.get('content', '')}" for m in messages
-        )
-        prompt = _SUMMARISE_PROMPT.format(messages_text=text)
-
-        url = f"{self.base_url}/chat/completions"
-        headers = {"Content-Type": "application/json"}
-        if self.api_key:
-            headers["Authorization"] = f"Bearer {self.api_key}"
-        body: dict = {
-            "model": self.model,
-            "messages": [{"role": "user", "content": prompt}],
-            "response_format": {"type": "json_object"},
-            "temperature": 0.2,
-        }
-
-        last_error: Exception | None = None
-        for attempt in (1, 2):
-            try:
-                resp = httpx.post(url, headers=headers, json=body, timeout=60)
-                resp.raise_for_status()
-                data = resp.json()
-                raw = data["choices"][0]["message"]["content"]
-                parsed = json.loads(raw)
-                return LLMOutput(**parsed)
-            except Exception as exc:
-                last_error = exc
-                if attempt == 2:
-                    raise LLMError(f"LLM summarisation failed after 2 attempts: {last_error}") from last_error
-        # unreachable — kept for type checker
-        raise LLMError("unreachable")
-
-    def embed(self, text: str) -> list[float] | None:
-        if not self.api_key:
-            return None
-        model = os.getenv("MBCLAW_EMBED_MODEL", "text-embedding-3-small")
-        try:
-            resp = httpx.post(
-                f"{self.base_url}/embeddings",
-                headers={
-                    "Content-Type": "application/json",
-                    "Authorization": f"Bearer {self.api_key}",
-                },
-                json={"model": model, "input": text[:8000]},
-                timeout=60,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            return data["data"][0]["embedding"]
-        except Exception:
-            return None
+__all__ = ["LLMClient", "LLMError", "get_llm", "LLMOutput"]
 
 
 # ── DI helper ────────────────────────────────────────────────

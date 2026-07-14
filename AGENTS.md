@@ -1,6 +1,8 @@
 # MBclawZZ Agent Memory
 
 ## 根目录
+- 强制工作区：`/tmp/openhands-sandboxes/MBclawZZ/`。
+- 禁止使用会话隔离副本路径（例如 `/tmp/openhands-sandboxes/<session>/MBclawZZ/`）作为主工作区。
 - 工作根：`/tmp/openhands-sandboxes/MBclawZZ/`。
 - 所有后续操作默认基于此根目录。
 
