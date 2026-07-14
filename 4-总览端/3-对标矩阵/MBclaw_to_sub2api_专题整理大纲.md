@@ -8,6 +8,7 @@
 - 以官方仓库 `Wei-Shaw/sub2api` 为准
 - 结合官方演示站、Docker 镜像、以及相关 fork 做实现对照
 - 将原模型入口能力映射到 sub2api 的 backend / frontend / tools / skills / docs
+- TokenPool 只作为历史参考，不作为需要继续兼容保留的目标实现
 
 ## 2. 参考资产
 ### 2.1 主参考
@@ -26,7 +27,7 @@
 ## 3. 模型入口能力分类
 ### 3.1 能力一：模型入口统一
 - 统一上游接入
-- 统一兼容 API
+- 统一标准 API
 - 统一请求入口
 
 ### 3.2 能力二：调度与路由
@@ -118,11 +119,12 @@
 - 第二套 sub2api 后端
 - 第二套重复的调度逻辑
 - 第二套独立管理台
+- 任何以 TokenPool 名义长期保留的旧门面、旧目录、旧接口壳
 
 ## 6. 完整迁移表
 | 模型入口能力 | sub2api 承接位置 | 处理方式 | 备注 |
 |---|---|---|---|
-| 统一模型入口 | backend | 直接复用 / 映射 | 保持兼容形状 |
+| 统一模型入口 | backend | 直接承接 / 映射 | 以 sub2api 为基础，不为旧 TokenPool 保留兼容壳 |
 | provider 路由 | backend | 直接复用 / 裁剪 | 先保留路由主干 |
 | fallback / retry | backend | 直接复用 | 作为核心能力保留 |
 | cooldown / rate limit | backend | 直接复用 | 与统计联动 |
