@@ -24,7 +24,6 @@
 ## 现有专题文档
 - `对标矩阵.md`：能力维度、项目级对标结论、研究优先级。
 - `MBclaw_to_sub2api_专题整理大纲.md`：MBclaw 迁移到 sub2api 的专题整理方案。
-- `MBclaw_to_sub2api_专题整理大纲.md`：MBclaw 迁移到 sub2api 的专题整理方案。
 - `mbclaw-mother_与_sub2api_职责边界.md`：主线与模型入口的职责边界。
 
 ## 待补
