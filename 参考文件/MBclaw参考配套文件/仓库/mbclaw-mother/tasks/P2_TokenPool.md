@@ -1,18 +1,18 @@
-# P2_TokenPool — TokenPool 改造
+# P2_sub2api — sub2api 改造
 
 ## 目标
-让 Mother 通过 HTTP API 正确使用 TokenPool 服务，消除 Mother 内置 TokenPool 副本，建立清晰的服务边界。
+让 Mother 通过 HTTP API 正确使用 sub2api 服务，消除 Mother 内置 sub2api 副本，建立清晰的服务边界。
 
 ## 子任务 (以后再拆)
 
-### 2.1 TokenPool 服务增强
+### 2.1 sub2api 服务增强
 - [ ] 统一 API 响应格式
 - [ ] 增加 `/v1/chat/completions` 端点（作为 Mother 的主要调用入口）
 - [ ] 增加 Key 选择建议 API（供 Mother 做最终决策）
 - [ ] 修复路由冲突（bridge_manager.py 两个 catch-all）
 
-### 2.2 Mother 接入 TokenPool
-- [ ] 创建 `app/llm/tokenpool_client.py` — TokenPool HTTP 客户端
+### 2.2 Mother 接入 sub2api
+- [ ] 创建 `app/llm/sub2api_client.py` — sub2api HTTP 客户端
 - [ ] 支持 base_url 配置（默认 localhost:8100）
 - [ ] 支持 fallback 到本地环境变量
 - [ ] 替换 Mother 内置 token_pool.py 的所有调用点
@@ -31,7 +31,7 @@
 - [ ] 评分算法单元测试
 
 ## 依赖
-- P1_Runtime (TokenPool HTTP 客户端在 P1 中创建)
+- P1_Runtime (sub2api HTTP 客户端在 P1 中创建)
 
 ## 禁止
 - 禁止新增调度算法
