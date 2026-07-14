@@ -10,7 +10,7 @@
 - 盘点服务器资产。
 - 整理主线职责边界。
 - 形成对标矩阵。
-- 收拢 TokenPool 与 sub2api 的整理方向。
+- 收拢 sub2api 的整理方向。
 - 把主线、参考、归档、交接分层说明补齐。
 
 ## 已明确的当前判断
@@ -23,5 +23,5 @@
 - 全量资产说明。
 - 主线与参考/归档的最终界限。
 - 细化各模块 README 与接口说明。
-- 将 `mbclaw-mother`、TokenPool、OpenClaw、OpenHands 的边界写成可接手结论。
-- 对 TokenPool → sub2api 的整理目标做成单独结论表。
+- 将 `mbclaw-mother`、sub2api、OpenClaw、OpenHands 的边界写成可接手结论。
+- 对 sub2api 的整理目标做成单独结论表。

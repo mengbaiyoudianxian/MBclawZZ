@@ -1,13 +1,13 @@
-# TokenPool → sub2api 专题整理大纲
+# MBclaw → sub2api 专题整理大纲
 
 ## 1. 目标
-把 MBclaw 原先与 TokenPool 相关的能力，按 sub2api 的现有结构重新整理成可落地、可迁移、可接手的专题方案。
+把 MBclaw 原先与模型入口相关的能力，按 sub2api 的现有结构重新整理成可落地、可迁移、可接手的专题方案。
 
-本专题不是再维护一套并行 TokenPool，而是：
+本专题不是再维护一套并行 sub2api，而是：
 - 以 `Wei-Shaw/sub2api` 为主载体
 - 以官方仓库 `Wei-Shaw/sub2api` 为准
 - 结合官方演示站、Docker 镜像、以及相关 fork 做实现对照
-- 将原 TokenPool 的能力映射到 sub2api 的 backend / frontend / tools / skills / docs
+- 将原模型入口能力映射到 sub2api 的 backend / frontend / tools / skills / docs
 
 ## 2. 参考资产
 ### 2.1 主参考
@@ -23,7 +23,7 @@
 ### 2.3 本地已克隆资源
 - 已克隆远程仓库 `Wei-Shaw/sub2api`
 
-## 3. TokenPool 现有能力分类
+## 3. 模型入口能力分类
 ### 3.1 能力一：模型入口统一
 - 统一上游接入
 - 统一兼容 API
@@ -115,12 +115,12 @@
 
 ### 5.3 不再并行维护
 不再并行维护：
-- 第二套 TokenPool 后端
+- 第二套 sub2api 后端
 - 第二套重复的调度逻辑
 - 第二套独立管理台
 
 ## 6. 完整迁移表
-| TokenPool 能力 | sub2api 承接位置 | 处理方式 | 备注 |
+| 模型入口能力 | sub2api 承接位置 | 处理方式 | 备注 |
 |---|---|---|---|
 | 统一模型入口 | backend | 直接复用 / 映射 | 保持兼容形状 |
 | provider 路由 | backend | 直接复用 / 裁剪 | 先保留路由主干 |
@@ -135,14 +135,14 @@
 
 ## 7. 输出物
 1. 专题整理大纲
-2. TokenPool → sub2api 功能映射表
+2. sub2api 功能映射表
 3. 保留 / 迁移 / 裁剪 / 归档清单
 4. 风险点清单
 5. 后续施工顺序
 6. 验收标准
 
 ## 8. 验收标准
-- 能明确说出每个 TokenPool 能力落到 sub2api 的哪里。
+- 能明确说出每项模型入口能力落到 sub2api 的哪里。
 - 能明确说出哪些东西直接照搬，哪些需要裁剪。
 - 能明确说出哪些能力不再在 MBclaw 侧并行维护。
 - 能直接指导后续施工，而不是停留在口头总结。

@@ -1,8 +1,8 @@
-# mbclaw-mother 与 TokenPool 职责边界
+# mbclaw-mother 与 sub2api 职责边界
 
 ## 1. 核心结论
 - `mbclaw-mother` 负责目标、编排、交互、上下文、业务策略与主线流程。
-- TokenPool 负责模型入口治理、provider 路由、key 管理、fallback、cooldown、健康检测与统计。
+- sub2api 负责模型入口治理、provider 路由、key 管理、fallback、cooldown、健康检测与统计。
 - 当前整理与迁移主载体优先采用 `sub2api`。
 - Mother 不应再并行维护第二套重复的模型入口实现。
 
@@ -29,7 +29,7 @@
 - 决定是否需要 fallback 到其他路径
 - 决定是否切换到更轻量或更强的模型策略
 
-## 3. TokenPool 负责什么
+## 3. sub2api 负责什么
 ### 3.1 模型入口治理
 - 接收统一请求描述
 - 选择 provider / model / key
@@ -56,10 +56,10 @@
 ## 4. 边界划分
 ### 4.1 Mother 不做的事
 - 不直接承担模型调度细节
-- 不自己维护第二套 TokenPool
+- 不自己维护第二套 sub2api
 - 不把 provider/key/fallback 细节塞入主业务逻辑
 
-### 4.2 TokenPool 不做的事
+### 4.2 sub2api 不做的事
 - 不负责理解用户业务目标
 - 不负责任务拆解
 - 不负责记忆拼装
@@ -67,13 +67,13 @@
 - 不负责平台入口标准化
 
 ## 5. 与 sub2api 的关系
-- TokenPool 能力优先落到 sub2api。
+- 模型入口能力优先落到 sub2api。
 - MBclaw 侧只保留主线调用、策略、边界与引用。
 - sub2api 负责承接具体管理与调度实现。
 - 迁移时优先保持兼容接口和调度语义。
 
 ## 6. 验收标准
-- 读完后能明确说出 Mother 和 TokenPool 的边界。
+- 读完后能明确说出 Mother 和 sub2api 的边界。
 - 读完后能明确说出谁管目标，谁管资源。
-- 读完后能明确说出为什么 TokenPool 的能力要优先落到 sub2api。
+- 读完后能明确说出为什么模型入口能力要优先落到 sub2api。
 - 读完后不会再把调度逻辑和业务逻辑混成一团。
