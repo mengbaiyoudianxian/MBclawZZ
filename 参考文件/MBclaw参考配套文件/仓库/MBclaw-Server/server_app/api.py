@@ -12,15 +12,15 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.db import get_db
-from app.llm import LLMClient, LLMError
+from server_app.db import get_db
+from server_app.llm import LLMClient, LLMError, get_llm
 from server_app.sub2api_client import Sub2APIClient
-from app.memory import MemoryRepo
-from app.models import Message, Session as SessionModel  # orchestrator-only
-from app.pipeline import close_session
-from app.agent import agent_run
-from app.providers import list_providers
-from app.tools import execute as tool_execute, get_tool, list_tools, search_tools
+from server_app.memory import MemoryRepo
+from server_app.models import Message, Session as SessionModel  # orchestrator-only
+from server_app.pipeline import close_session
+from server_app.agent import agent_run
+from server_app.providers import list_providers
+from server_app.tools import execute as tool_execute, get_tool, list_tools, search_tools
 
 router = APIRouter()
 
@@ -146,7 +146,7 @@ def add_message(
 def close(
     sid: int,
     db: Session = Depends(get_db),
-    llm: Sub2APIClient = Depends(Sub2APIClient),
+    llm: LLMClient = Depends(get_llm),
 ):
     """Close a session: summarise, persist memory, mark closed."""
     try:
@@ -241,7 +241,7 @@ def mother_collect(req: MotherCollectRequest, db: Session = Depends(get_db)):
     tool = tool_names.get(req.action)
     if not tool:
         raise HTTPException(400, f"不支持的动作: {req.action}，可选: {', '.join(tool_names.keys())}")
-    from app.tools import execute as tool_execute
+    from server_app.tools import execute as tool_execute
     result = tool_execute(db, tool, req.code)
     ok = result.startswith("✅")
     return {"ok": ok, "action": req.action, "code": req.code, "result": result}
@@ -321,7 +321,7 @@ def get_tool_detail(tool_id: int, db: Session = Depends(get_db)):
 @router.post("/tools/execute")
 def execute_tool(req: ToolExecuteRequest, db: Session = Depends(get_db)):
     """Execute a tool and return the result."""
-    from app.tools import bump_usage
+    from server_app.tools import bump_usage
     bump_usage(db, req.name)
     result = tool_execute(db, req.name, req.content)
     ok = not result.startswith("工具执行错误") and not result.startswith("未知工具")

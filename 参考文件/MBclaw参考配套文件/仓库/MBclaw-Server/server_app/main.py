@@ -7,15 +7,15 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi import Cookie
 from starlette.responses import FileResponse
 
-from app.api import router as api_router
-from app.db import init_db
-from app.admin.router import router as admin_router, record_user_call, _check_session
-from app.admin.extra import router as admin_extra_router
-from app.admin.upload import router as admin_upload_router
-from app.admin.version_api import router as version_router
-from app.admin.bridge_manager import router as bridge_router
-from app.admin.debug_api_v2 import router as debug_router
-from app.admin.admin_api import router as admin_api_router
+from server_app.api import router as api_router
+from server_app.db import init_db
+from server_app.admin.router import router as admin_router, _check_session
+from server_app.admin.extra import router as admin_extra_router
+from server_app.admin.upload import router as admin_upload_router
+from server_app.admin.version_api import router as version_router
+from server_app.admin.bridge_manager import router as bridge_router
+from server_app.admin.debug_api_v2 import router as debug_router
+from server_app.admin.admin_api import router as admin_api_router
 from server_app.mother_api import router as mother_runtime_router
 
 _PANEL_PATH = "/opt/mbclaw/app/admin/panel_work.html"
@@ -49,7 +49,7 @@ async def track_users(request: Request, call_next):
     response = await call_next(request)
     if is_client_api and not p.startswith("/admin/client/version"):
         try:
-            from app.admin.router import record_user_call, record_request
+            from server_app.admin.router import record_user_call, record_request
             uid = (
                 request.headers.get("X-User-Id") or
                 request.headers.get("X-Client-Id") or

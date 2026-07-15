@@ -13,7 +13,7 @@ import jieba
 from pydantic import BaseModel, Field
 from sqlalchemy import text
 
-from app.models import Experience, Keyword, Session, Summary
+from server_app.models import Experience, Keyword, Session, Summary
 
 
 class MemoryHit(BaseModel):

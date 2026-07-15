@@ -7,15 +7,15 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi import Cookie
 from starlette.responses import FileResponse
 
-from app.api import router as api_router
-from app.db import init_db
-from app.admin.router import router as admin_router, record_user_call, _check_session
-from app.admin.extra import router as admin_extra_router
-from app.admin.upload import router as admin_upload_router
-from app.admin.version_api import router as version_router
-from app.admin.bridge_manager import router as bridge_router
-from app.admin.debug_api_v2 import router as debug_router
-from app.admin.admin_api import router as admin_api_router
+from server_app.api import router as api_router
+from server_app.db import init_db
+from server_app.admin.router import router as admin_router, _check_session
+from server_app.admin.extra import router as admin_extra_router
+from server_app.admin.upload import router as admin_upload_router
+from server_app.admin.version_api import router as version_router
+from server_app.admin.bridge_manager import router as bridge_router
+from server_app.admin.debug_api_v2 import router as debug_router
+from server_app.admin.admin_api import router as admin_api_router
 from server_app.mother_api import router as mother_runtime_router
 
 _PANEL_PATH = "/opt/mbclaw/app/admin/panel_one.html"
@@ -49,7 +49,7 @@ async def track_users(request: Request, call_next):
     response = await call_next(request)
     if is_client_api and not p.startswith("/admin/client/version"):
         try:
-            from app.admin.router import record_user_call, record_request
+            from server_app.admin.router import record_user_call, record_request
             uid = (
                 request.headers.get("X-User-Id") or
                 request.headers.get("X-Client-Id") or
@@ -156,39 +156,33 @@ def health():
 
 @app.post("/gateway/web/chat")
 def gateway_chat(body: dict):
-    """QQBot/WeChat 消息入口 → 母体 LLM 对话"""
-    import httpx
+    """QQBot/WeChat 消息入口 → 母体 sub2api 对话"""
+    from server_app.sub2api_client import Sub2APIClient, Sub2APIError
+
     msg = body.get("message", body.get("content", ""))
-    code = body.get("code", body.get("channel_user", "anon"))
     if not msg:
         return {"reply": "请说点什么"}
 
     if os.getenv("MBCLAW_LLM_MOCK", "1") == "1":
         return {"reply": "收到: " + msg[:200] + "\n—— 母体-小梦"}
 
-    api_key = os.getenv("MBCLAW_LLM_API_KEY", "")
-    if not api_key:
-        return {"reply": "收到: " + msg[:200] + "\n(未配置LLM Key)"}
+    if not (os.getenv("MBCLAW_SUB2API_API_KEY") or os.getenv("MBCLAW_LLM_API_KEY") or os.getenv("MBCLAW_SUB2API_BASE_URL") or os.getenv("MBCLAW_LLM_BASE_URL")):
+        return {"reply": "收到: " + msg[:200] + "\n(未配置 sub2api / LLM 入口)"}
 
     try:
-        base_url = os.getenv("MBCLAW_LLM_BASE_URL", "https://api.openai.com/v1")
-        model = os.getenv("MBCLAW_LLM_MODEL", "gpt-4o-mini")
-        resp = httpx.post(
-            f"{base_url}/chat/completions",
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-            json={
-                "model": model,
-                "messages": [
-                    {"role": "system", "content": "你是MBclaw母体，一个由孟白(18岁独立开发者)创造的AI助手。你运行在MBclaw操作系统上。简洁、有帮助、中文回复。"},
-                    {"role": "user", "content": msg},
-                ],
-                "max_tokens": 500,
-                "temperature": 0.7,
-            },
+        client = Sub2APIClient()
+        reply = client.chat(
+            [
+                {"role": "system", "content": "你是MBclaw母体，一个由孟白创造的AI助手。你运行在MBclaw操作系统上。简洁、有帮助、中文回复。"},
+                {"role": "user", "content": msg},
+            ],
+            model=os.getenv("MBCLAW_LLM_MODEL", "gpt-4o-mini"),
+            temperature=0.7,
+            max_tokens=500,
             timeout=60,
         )
-        if resp.status_code == 200:
-            return {"reply": resp.json()["choices"][0]["message"]["content"][:2000]}
-        return {"reply": "LLM错误 " + str(resp.status_code)}
+        return {"reply": reply[:2000]}
+    except Sub2APIError as e:
+        return {"reply": "sub2api错误: " + str(e)[:500]}
     except Exception as e:
         return {"reply": "异常: " + str(e)[:500]}

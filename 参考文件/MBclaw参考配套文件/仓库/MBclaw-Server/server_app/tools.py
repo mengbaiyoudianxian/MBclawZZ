@@ -9,7 +9,7 @@ from typing import Optional
 
 from sqlalchemy.orm import Session
 
-from app.models import Tool
+from server_app.models import Tool
 
 
 
@@ -319,17 +319,17 @@ def execute(db: Session, tool_name: str, content: str) -> str:
             return out[:3000] or f"(退出码:{r.returncode})"
 
         elif tool_name == "search_memory":
-            from app.memory import MemoryRepo
+            from server_app.memory import MemoryRepo
             hits = MemoryRepo(db).query(content, top_n=5)
             return "\n".join(f"[#{h.session_id}] {h.summary[:200]} (score:{h.score:.2f})" for h in hits) or "未找到相关记忆"
 
         elif tool_name == "list_sessions":
-            from app.models import Session as SM
+            from server_app.models import Session as SM
             sessions = db.query(SM).order_by(SM.started_at.desc()).limit(20).all()
             return "\n".join(f"#{s.id} [{s.status}] {s.title}" for s in sessions) or "无会话"
 
         elif tool_name == "get_session":
-            from app.models import Session as SM, Message
+            from server_app.models import Session as SM, Message
             try: sid = int(content.strip())
             except: return "需要 session_id"
             s = db.query(SM).filter(SM.id==sid).first()

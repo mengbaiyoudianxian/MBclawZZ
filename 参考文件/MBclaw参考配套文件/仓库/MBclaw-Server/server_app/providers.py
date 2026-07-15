@@ -1,14 +1,15 @@
 """Multi-provider LLM dispatch — R0 extension, derived from model_service.py."""
 
 import os
-from app.models import ModelProfile
+from server_app.models import ModelProfile
 from datetime import datetime, timezone
 
 from pydantic import BaseModel
 from sqlalchemy import DateTime, Float, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, Session
 
-from app.llm import LLMClient
+from server_app.llm import LLMClient
+
 
 
 
@@ -23,6 +24,8 @@ class ProviderInfo(BaseModel):
 # ── built-in defaults ───────────────────────────────────────
 
 BUILTIN_PROVIDERS = [
+    {"key_alias": "sub2api-default", "provider": "sub2api", "model_name": "gpt-4o-mini",
+     "api_base": "http://127.0.0.1:8100/v1", "api_key_env": "MBCLAW_SUB2API_API_KEY", "priority": 100},
     {"key_alias": "openai-gpt4o", "provider": "openai", "model_name": "gpt-4o",
      "api_base": "https://api.openai.com/v1", "api_key_env": "OPENAI_API_KEY", "priority": 10},
     {"key_alias": "openai-gpt4o-mini", "provider": "openai", "model_name": "gpt-4o-mini",
@@ -48,7 +51,7 @@ def list_providers(db: Session) -> list[ProviderInfo]:
     result = []
     for p in profiles:
         key = os.getenv(p.api_key_env) if p.api_key_env else None
-        active = p.is_active and (bool(key) or p.provider == "local")
+        active = p.is_active and (bool(key) or p.provider in {"local", "sub2api"})
         result.append(ProviderInfo(
             key_alias=p.key_alias, provider=p.provider,
             model_name=p.model_name, active=active, priority=p.priority,
@@ -63,9 +66,11 @@ def get_best_client(db: Session) -> LLMClient:
         ModelProfile.is_active == True
     ).order_by(ModelProfile.priority.desc()).all()
 
-    # Try env-configured key first
-    env_key = os.getenv("MBCLAW_LLM_API_KEY")
-    if env_key:
+    # sub2api is the default foundation; prefer it even when running locally without an explicit key
+    if profiles and profiles[0].provider == "sub2api":
+        return LLMClient()
+
+    if os.getenv("MBCLAW_SUB2API_BASE_URL") or os.getenv("MBCLAW_SUB2API_API_KEY") or os.getenv("MBCLAW_LLM_BASE_URL"):
         return LLMClient()
 
     for p in profiles:

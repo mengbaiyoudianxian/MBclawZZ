@@ -8,10 +8,9 @@ from datetime import datetime, timezone
 
 import jieba.analyse
 
-from app.llm import LLMClient
 from server_app.sub2api_client import Sub2APIClient
-from app.memory import MemoryRepo
-from app.models import Message, Session  # orchestrator-only imports
+from server_app.memory import MemoryRepo
+from server_app.models import Message, Session  # orchestrator-only imports
 
 
 def close_session(db, sid: int, llm: Sub2APIClient) -> dict:
@@ -68,7 +67,7 @@ def close_session(db, sid: int, llm: Sub2APIClient) -> dict:
     return {
         "session_id": sid,
         "status": "closed",
-        "summary": llm_out.summary,
+        "summary": llm_out["summary"],
         "keywords": [{"keyword": k, "weight": w} for k, w in merged_kws],
         "experiences": exp_dicts,
         "stats": {"message_count": len(messages), "cached": False},

@@ -114,7 +114,7 @@ def list_users(page: int = 1, limit: int = 20, search: str = ""):
     inst = _load(INSTANCES, {})
     bl = _load(BLACKLIST, {"ips": [], "devices": []})
     try:
-        from app.admin.debug_api import _debug_heartbeats
+        from server_app.admin.debug_api import _debug_heartbeats
         hb_map = {}
         for k, v in _debug_heartbeats.items():
             hb_map[v.get("device_id", "")] = v
@@ -221,7 +221,7 @@ def user_detail(device_id: str = ""):
     reports = _load(REPORTS_FILE, {})
     bl = _load(BLACKLIST, {"ips": [], "devices": []})
     try:
-        from app.admin.debug_api import _debug_heartbeats
+        from server_app.admin.debug_api import _debug_heartbeats
         hb_map = {v.get("device_id",""): v for v in _debug_heartbeats.values()}
     except: hb_map = {}
     

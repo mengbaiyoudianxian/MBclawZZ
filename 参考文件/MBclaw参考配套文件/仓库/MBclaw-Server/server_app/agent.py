@@ -4,10 +4,10 @@ Derived from agent_runtime.py. Uses MemoryRepo + tools module.
 """
 
 import json, os, re
-from app.llm import LLMClient
-from app.memory import MemoryRepo
-from app.tools import execute as exec_tool, bump_usage, list_tools
-from app.models import Message, Session as SessionModel
+from server_app.llm import LLMClient
+from server_app.memory import MemoryRepo
+from server_app.tools import execute as exec_tool, bump_usage, list_tools
+from server_app.models import Message, Session as SessionModel
 from sqlalchemy.orm import Session as DBSession
 
 AGENT_PROMPT = """你是 MBclaw 母体，一个面向手机、服务端、记忆和工具运行时的全能力 AI Agent。

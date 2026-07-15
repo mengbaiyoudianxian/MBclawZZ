@@ -48,7 +48,7 @@ def init_db():
     """Create all tables from models and apply FTS5 virtual-table schema."""
     os.makedirs(os.path.dirname(DB_PATH) or ".", exist_ok=True)
 
-    import app.models  # noqa: F401
+    import server_app.models  # noqa: F401
     Base.metadata.create_all(bind=engine)
 
     fts_path = os.path.join(os.path.dirname(__file__), "schema", "fts.sql")

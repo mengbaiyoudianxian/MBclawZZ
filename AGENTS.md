@@ -24,6 +24,7 @@
 5. 其余参考仓库按需保留
 
 ## 约束
+- `MBclaw-Server` 当前活跃模型入口链已收口到 `server_app.sub2api_client.Sub2APIClient`；同时已把活跃入口模块的 `app.*` 旧命名空间导入改成 `server_app.*`，避免运行时找不到包。
 - 不随意删除未确认的主线资产。
 - 不使用复制替代移动。
 - 归档与参考必须区分。
@@ -31,3 +32,4 @@
 - 当前已确认：GitHub 账号 `mengbaiyoudianxian` 的主要仓库已盘点，最新主线仓库为 `mbclaw-mother`；`MBclawZZ` 本地目录主要是骨架与文档层，没有业务代码。
 - `必读大纲.md` 已包含分篇结构，且已写入 `sub2api` 的整理原则章节；后续重点是继续收敛职责边界、补足未完成事项，而不是新增无关资料。
 - 当前本地可复用重点：`4-总览端`、`6-交接工作区域`、`参考文件`、`归档文件`，适合作为后续接手总入口。
+- 2026-07-15：`repo: upload full workspace state` 首次推送被 GitHub Push Protection 拦截，原因是 `参考文件/GitHub精品参考/sub2api` 里带入了真实 Google OAuth Client ID/Secret。后续若上传参考仓库快照，优先先做凭据去敏，再推送，避免再次卡在 secret scanning。
