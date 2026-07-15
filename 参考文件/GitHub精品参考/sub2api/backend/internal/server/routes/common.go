@@ -8,10 +8,14 @@ import (
 
 // RegisterCommonRoutes 注册通用路由（健康检查、状态等）
 func RegisterCommonRoutes(r *gin.Engine) {
-	// 健康检查
-	r.GET("/health", func(c *gin.Context) {
+	healthHandler := func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
-	})
+	}
+
+	// 健康检查
+	r.GET("/health", healthHandler)
+	// OpenAI-compatible clients often keep /v1 in their configured base URL.
+	r.GET("/v1/health", healthHandler)
 
 	// Claude Code 遥测日志（忽略，直接返回200）
 	r.POST("/api/event_logging/batch", func(c *gin.Context) {

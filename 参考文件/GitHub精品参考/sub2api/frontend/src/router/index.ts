@@ -404,6 +404,17 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/admin/mbclaw',
+    name: 'AdminMBclaw',
+    component: () => import('@/views/admin/MBclawView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true,
+      title: 'MBclaw Foundation',
+      descriptionKey: 'MBclaw token foundation and Mother control entrypoints'
+    }
+  },
+  {
     path: '/admin/ops',
     name: 'AdminOps',
     component: () => import('@/views/admin/ops/OpsDashboard.vue'),
