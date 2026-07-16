@@ -106,6 +106,18 @@ func RegisterAdminRoutes(
 
 		// 邀请返利（专属用户管理）
 		registerAffiliateRoutes(admin, h)
+
+			// MBclaw 地基预留入口
+			registerMBclawRoutes(admin, h)
+		}
+	}
+
+func registerMBclawRoutes(admin *gin.RouterGroup, h *handler.Handlers) {
+	mbclaw := admin.Group("/mbclaw")
+	{
+		mbclaw.GET("/status", h.Admin.MBclaw.Status)
+		mbclaw.POST("/upstream-tokens", h.Admin.MBclaw.CreateUpstreamToken)
+		mbclaw.POST("/token-pool-modules", h.Admin.MBclaw.RegisterTokenPoolModule)
 	}
 }
 
