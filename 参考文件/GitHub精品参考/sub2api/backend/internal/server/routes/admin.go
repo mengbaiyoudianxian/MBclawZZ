@@ -107,10 +107,10 @@ func RegisterAdminRoutes(
 		// 邀请返利（专属用户管理）
 		registerAffiliateRoutes(admin, h)
 
-			// MBclaw 地基预留入口
-			registerMBclawRoutes(admin, h)
-		}
+		// MBclaw 地基预留入口
+		registerMBclawRoutes(admin, h)
 	}
+}
 
 func registerMBclawRoutes(admin *gin.RouterGroup, h *handler.Handlers) {
 	mbclaw := admin.Group("/mbclaw")
@@ -118,6 +118,14 @@ func registerMBclawRoutes(admin *gin.RouterGroup, h *handler.Handlers) {
 		mbclaw.GET("/status", h.Admin.MBclaw.Status)
 		mbclaw.POST("/upstream-tokens", h.Admin.MBclaw.CreateUpstreamToken)
 		mbclaw.POST("/token-pool-modules", h.Admin.MBclaw.RegisterTokenPoolModule)
+	}
+
+	agent := admin.Group("/agent")
+	{
+		agent.POST("/chat", h.Admin.Agent.Chat)
+		agent.GET("/conversations", h.Admin.Agent.ListConversations)
+		agent.GET("/conversations/:id", h.Admin.Agent.GetConversation)
+		agent.DELETE("/conversations/:id", h.Admin.Agent.DeleteConversation)
 	}
 }
 
@@ -309,7 +317,6 @@ func registerAccountRoutes(admin *gin.RouterGroup, h *handler.Handlers) {
 		accounts.GET("", h.Admin.Account.List)
 		accounts.GET("/:id", h.Admin.Account.GetByID)
 		accounts.POST("", h.Admin.Account.Create)
-		accounts.POST("/:id/duplicate", h.Admin.Account.Duplicate)
 		accounts.POST("/check-mixed-channel", h.Admin.Account.CheckMixedChannel)
 		accounts.POST("/import/codex-session", h.Admin.Account.ImportCodexSession)
 		accounts.POST("/sync/crs", h.Admin.Account.SyncFromCRS)
@@ -413,7 +420,6 @@ func registerGrokOAuthRoutes(admin *gin.RouterGroup, h *handler.Handlers) {
 		grok.POST("/oauth/refresh-token", h.Admin.GrokOAuth.RefreshToken)
 		grok.POST("/oauth/create-from-oauth", h.Admin.GrokOAuth.CreateAccountFromOAuth)
 		grok.POST("/sso-to-oauth", h.Admin.GrokOAuth.CreateAccountsFromSSO)
-		grok.POST("/oauth/reconcile", h.Admin.GrokOAuth.ReconcileOAuthAccounts)
 		grok.POST("/accounts/:id/refresh", h.Admin.GrokOAuth.RefreshAccountToken)
 		grok.GET("/accounts/:id/quota", h.Admin.GrokOAuth.QueryQuota)
 		grok.POST("/accounts/:id/reset-quota", h.Admin.GrokOAuth.ResetQuota)

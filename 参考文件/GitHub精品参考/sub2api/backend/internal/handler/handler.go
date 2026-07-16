@@ -39,6 +39,7 @@ type AdminHandlers struct {
 	Affiliate              *admin.AffiliateHandler
 	Compliance             *admin.ComplianceHandler
 	MBclaw                 *admin.MBclawHandler
+	Agent                  *admin.AgentHandler
 }
 
 // Handlers contains all HTTP handlers

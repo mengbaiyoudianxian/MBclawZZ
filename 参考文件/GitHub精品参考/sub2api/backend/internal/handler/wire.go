@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"database/sql"
+
 	"github.com/Wei-Shaw/sub2api/internal/handler/admin"
 	"github.com/Wei-Shaw/sub2api/internal/service"
 
@@ -42,6 +44,7 @@ func ProvideAdminHandlers(
 	affiliateHandler *admin.AffiliateHandler,
 	complianceHandler *admin.ComplianceHandler,
 	mbclawHandler *admin.MBclawHandler,
+	agentHandler *admin.AgentHandler,
 ) *AdminHandlers {
 	return &AdminHandlers{
 		Dashboard:              dashboardHandler,
@@ -77,6 +80,7 @@ func ProvideAdminHandlers(
 		Affiliate:              affiliateHandler,
 		Compliance:             complianceHandler,
 		MBclaw:                 mbclawHandler,
+		Agent:                  agentHandler,
 	}
 }
 
@@ -142,6 +146,12 @@ func ProvideHandlers(
 	}
 }
 
+
+// ProvideAgentHandler creates admin.AgentHandler with AdminService and DB
+func ProvideAgentHandler(adminService service.AdminService, db *sql.DB) *admin.AgentHandler {
+	return admin.NewAgentHandler(adminService, db)
+}
+
 // ProviderSet is the Wire provider set for all handlers
 var ProviderSet = wire.NewSet(
 	// Top-level handlers
@@ -196,6 +206,7 @@ var ProviderSet = wire.NewSet(
 	admin.NewAffiliateHandler,
 	admin.NewComplianceHandler,
 	admin.NewMBclawHandler,
+	ProvideAgentHandler,
 
 	// AdminHandlers and Handlers constructors
 	ProvideAdminHandlers,
