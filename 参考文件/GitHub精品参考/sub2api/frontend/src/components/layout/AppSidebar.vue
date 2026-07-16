@@ -292,6 +292,21 @@ const KeyIcon = {
     )
 }
 
+const BotIcon = {
+  render: () =>
+    h(
+      'svg',
+      { fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor', 'stroke-width': '1.5' },
+      [
+        h('rect', { x: '3', y: '11', width: '18', height: '10', rx: '2' }),
+        h('circle', { cx: '12', cy: '5', r: '2' }),
+        h('path', { d: 'M12 7v4' }),
+        h('line', { x1: '8', y1: '16', x2: '8', y2: '16.01' }),
+        h('line', { x1: '16', y1: '16', x2: '16', y2: '16.01' })
+      ]
+    )
+}
+
 const BatchImageIcon = {
   render: () =>
     h(
@@ -754,6 +769,7 @@ const adminNavItems = computed((): NavItem[] => {
   const baseItems: NavItem[] = [
     { path: '/admin/dashboard', label: t('nav.dashboard'), icon: DashboardIcon },
     { path: '/admin/mbclaw', label: 'MBclaw 地基', icon: KeyIcon, hideInSimpleMode: true },
+    { path: '/admin/agent', label: 'AI 助手', icon: BotIcon, hideInSimpleMode: true },
     { path: '/admin/ops', label: t('nav.ops'), icon: ChartIcon, featureFlag: flagOpsMonitoring },
     { path: '/admin/users', label: t('nav.users'), icon: UsersIcon, hideInSimpleMode: true },
     { path: '/admin/groups', label: t('nav.groups'), icon: FolderIcon, hideInSimpleMode: true },

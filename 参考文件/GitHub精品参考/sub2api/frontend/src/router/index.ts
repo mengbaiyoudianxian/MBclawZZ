@@ -415,6 +415,17 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
+    path: '/admin/agent',
+    name: 'AdminAgent',
+    component: () => import('@/views/admin/AgentChatView.vue'),
+    meta: {
+      requiresAuth: true,
+      requiresAdmin: true,
+      title: 'AI 助手',
+      descriptionKey: 'AI-powered admin agent for sub2api management'
+    }
+  },
+  {
     path: '/admin/ops',
     name: 'AdminOps',
     component: () => import('@/views/admin/ops/OpsDashboard.vue'),
